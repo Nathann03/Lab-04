@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <chrono>
+#include <string>
 typedef std::chrono::high_resolution_clock Clock;
 
 
@@ -327,6 +328,47 @@ public:
 		head = NULL;
 		tail = NULL;
 	}
+
+	// pop last node and return pointer to that node
+	student* pop() {
+		student* temp = head;
+		student* prev = NULL;
+		while (temp->next != NULL) {
+			prev = temp;
+			temp = temp->next;
+		}
+		prev->next = NULL;
+		tail = prev;
+		return temp;
+	}
+	
+	// add node in sorted order
+	void addNode(student* node) {
+		student* temp = head;
+		student* prev = NULL;
+		if (head == NULL) {
+			head = node;
+			tail = node;
+			return;
+		}
+		while (temp != NULL && *node > *temp) {
+			prev = temp;
+			temp = temp->next;
+		}
+		if (prev == NULL) {
+			node->next = head;
+			head = node;
+		}
+		else if (temp == NULL) {
+			tail->next = node;
+			tail = node;
+		}
+		else {
+			prev->next = node;
+			node->next = temp;
+		}
+	}
+	
 	void createNode(int mnumber, std::string Firstname, std::string Lastname) {
 		student* temp = new student;
 		temp->mnumber = mnumber;
@@ -441,36 +483,219 @@ public:
         return;
 	}
 
-	//radix sort linked list
+
+    void insertionSort(student** head_ref){
+	    student* sorted = NULL;
+	    student* current = *head_ref;
+	    while (current != NULL) {
+		    student* next = current->next;
+		    sortedInsert(&sorted, current);
+		    current = next;
+	    }
+	    // Update head_ref to point to sorted linked list
+	    *head_ref = sorted;
+	}
 	
-	
-	
+	void sortedInsert(student** head_ref, student* new_node) {
+		student* current;
+		// Special case for the head end
+		if (*head_ref == NULL || (*head_ref)->mnumber >= new_node->mnumber) {
+			new_node->next = *head_ref;
+			*head_ref = new_node;
+		}
+		else {
+			// Locate the node before the point of insertion
+			current = *head_ref;
+			while (current->next != NULL && current->next->mnumber < new_node->mnumber) {
+				current = current->next;
+			}
+			new_node->next = current->next;
+			current->next = new_node;
+		}
+	}
 	
 		
 
 };
 
+// test program for the linked list class and sorting
+void test_program() {
+    bool linked = false;
+    std::string input = "";
+    std::string prompt = "Select an option: \n1. Use a linked list to store the data (will generate random data) \n2. Use an array to store the data (will generate random data)";
+	std::cout << prompt << std::endl;
+	std::cin >> input;
+    if (input == "1") {
+        linked = true;
+    }
+    else if (input == "2") {
+        linked = false;
+    }
+    else {
+		std::cout << "Invalid Input. Input must be 1 or 2" << std::endl;
+        return;
+    }
+	
+    if (linked) {
 
-	
-	
-	
+        linkedList list;
+        std::cout << "How many students do you want to generate?" << std::endl;
+        int num;
+        std::cin >> num;
+        for (int i = 0; i < num; i++) {
+            int mnumber = rand() % 1000000;
+            std::string Firstname = "First" + std::to_string(i);
+            std::string Lastname = "Last" + std::to_string(i);
+            list.insertNode(mnumber, Firstname, Lastname);
+        }
+		
+        std::cout << "Unsorted Linked list:" << std::endl;
+        list.display();
+		
+		std::cout << "Select an option: \n1. Bubble Sort \n2. Merge Sort \n3. Insertion Sort" << std::endl;
+		std::cin >> input;
+		if (input == "1") {
+			std::cout << "Bubble Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			list.bubbleSort();
+			auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+            std::chrono::duration<double, std::nano> elapsed_us = end - start;
+            std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+            std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+		}
+		else if (input == "2") {
+			std::cout << "Merge Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			list.mergeSort(&list.head);
+			auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+            std::chrono::duration<double, std::nano> elapsed_us = end - start;
+            std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+            std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+		}
+		else if (input == "3") {
+			std::cout << "Insertion Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			list.insertionSort(&list.head);
+			auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+            std::chrono::duration<double, std::nano> elapsed_us = end - start;
+			std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+            std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+		}
+		else {
+			std::cout << "Invalid Input. Choose a integer between 1 and 3, inclusive" << std::endl;
+			return;
+		}
 
+        std::cout << "Sorted Linked list:" << std::endl;
+        list.display();
 
-	
-	
-	
+		
+	}
+	else {
+        std::cout << "Note: Current array size is set at 25000, if you want to change, go to line 600." << std::endl;
 
-	
-	
-	
-	
-	
+        const int ARRAY_SIZE = 100;
 
+        int rand_array[ARRAY_SIZE];
 
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            rand_array[i] = rand() % (2 * ARRAY_SIZE);  //Generate number between 0 and 2 * the size of the array
+        }
 
+		std::cout << "Unsorted Array:" << std::endl;
+		for (int i = 0; i < ARRAY_SIZE; i++) {
+			std::cout << rand_array[i] << " ";
+		}
+        std::cout << std::endl;
+		
+		
+		std::cout << "Select an option: \n1. Bubble Sort \n2. Insertion Sort \n3. Merge Sort \n4. Quick Sort \n5. Heap Sort \n 6. Counting Sort \n 7. Radix sort" << std::endl;
+		std::cin >> input;
+		if (input == "1") {
+			std::cout << "Bubble Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			bubbleSort(rand_array, ARRAY_SIZE);
+			auto end = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+			std::chrono::duration<double, std::nano> elapsed_us = end - start;
+			std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+			std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+		}
+		else if (input == "2") {
+			std::cout << "Insertion Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			insertionSort(rand_array, ARRAY_SIZE);
+			auto end = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+			std::chrono::duration<double, std::nano> elapsed_us = end - start;
+			std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+			std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+		}
+		else if (input == "3") {
+			std::cout << "Merge Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			mergeSort(rand_array, 0, ARRAY_SIZE - 1);
+			auto end = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+			std::chrono::duration<double, std::nano> elapsed_us = end - start;
+			std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+			std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+		}
+		else if (input == "4") {
+			std::cout << "Quick Sort" << std::endl;
+			auto start = std::chrono::high_resolution_clock::now();
+			quickSort(rand_array, 0, ARRAY_SIZE - 1);
+			auto end = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+			std::chrono::duration<double, std::nano> elapsed_us = end - start;
+			std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+			std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+        }
+        else if (input == "5") {
+            std::cout << "Heap sort" << std::endl;
+            auto start = std::chrono::high_resolution_clock::now();
+			heapSort(rand_array, ARRAY_SIZE);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+            std::chrono::duration<double, std::nano> elapsed_us = end - start;
+            std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+            std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+        }
+        else if (input == "6") {
+            std::cout << "Counting sort" << std::endl;
+            auto start = std::chrono::high_resolution_clock::now();
+			countsort(rand_array, ARRAY_SIZE);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+            std::chrono::duration<double, std::nano> elapsed_us = end - start;
+            std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+            std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+        }
+        else if (input == "7") {
+            std::cout << "Radix sort" << std::endl;
+            auto start = std::chrono::high_resolution_clock::now();
+			radixsort(rand_array, ARRAY_SIZE);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed_ms = end - start;
+            std::chrono::duration<double, std::nano> elapsed_us = end - start;
+            std::cout << "Time taken: " << elapsed_ms.count() << " milliseconds" << std::endl;
+            std::cout << "Time taken: " << elapsed_us.count() << " nanoseconds" << std::endl;
+        }
+        else {
+            std::cout << "Invalid input! Input an integer between 1 and 7, inclusive." << std::endl;
+            return;
+        }
 
-
-
+        std::cout << "Sorted Array:" << std::endl;
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            std::cout << rand_array[i] << " ";
+        }
+		
+    }
+}
 
 
 
@@ -478,21 +703,23 @@ public:
 
 int main() {
 
-	linkedList list;
-	list.insertNode(321, "John", "Smith");
-	list.insertNode(221, "Jane", "Doe");
-	list.insertNode(31, "Bob", "Smith");
-	list.insertNode(433, "Sally", "Doe");
-	list.insertNode(52, "Joe", "Smith");
-	list.insertNode(6, "Mary", "Doe");
-	list.insertNode(71, "Bill", "Smith");
+    test_program();
+	
+	//linkedList list;
+	//list.insertNode(321, "John", "Smith");
+	//list.insertNode(221, "Jane", "Doe");
+	//list.insertNode(31, "Bob", "Smith");
+	//list.insertNode(433, "Sally", "Doe");
+	//list.insertNode(52, "Joe", "Smith");
+	//list.insertNode(6, "Mary", "Doe");
+	//list.insertNode(71, "Bill", "Smith");
 
-	std::cout << "Unsorted List: " << std::endl;
-	list.display();
-	std::cout << "Sorted List: " << std::endl;
-	//merge sort list
-	list.mergeSort(&list.head);
-	list.display();
+	//std::cout << "Unsorted List: " << std::endl;
+	//list.display();
+	//std::cout << "Sorted List: " << std::endl;
+	////merge sort list
+	//list.insertionSort(&list.head);
+	//list.display();
 
 
 
