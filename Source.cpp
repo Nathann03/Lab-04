@@ -298,7 +298,177 @@ void printArray(int array[], int size) {
 }
 
 // --------------------------------------------------------------------------
-// Linked List
+
+//Linked List containing student name and mnumber
+struct student {
+	int mnumber;
+	std::string Firstname;
+	std::string Lastname;
+	student* next;
+	//operator overloading to comapre mnumber
+	bool operator<(const student& rhs) const {
+		return mnumber < rhs.mnumber;
+	}
+	bool operator>(const student& rhs) const {
+		return mnumber > rhs.mnumber;
+	}
+	bool operator==(const student& rhs) const {
+		return mnumber == rhs.mnumber;
+	}
+};
+
+//linked list 
+class linkedList {
+private:
+	
+public:
+	student* head, * tail;
+	linkedList() {
+		head = NULL;
+		tail = NULL;
+	}
+	void createNode(int mnumber, std::string Firstname, std::string Lastname) {
+		student* temp = new student;
+		temp->mnumber = mnumber;
+		temp->Firstname = Firstname;
+		temp->Lastname = Lastname;
+		temp->next = NULL;
+		if (head == NULL) {
+			head = temp;
+			tail = temp;
+			temp = NULL;
+		}
+		else {
+			tail->next = temp;
+			tail = temp;
+		}
+	}
+	void display() {
+		student* temp = new student;
+		temp = head;
+		while (temp != NULL) {
+			std::cout << temp->mnumber << " " << temp->Firstname << " " << temp->Lastname << std::endl;
+			temp = temp->next;
+		}
+	}
+	//insert node at the end of the list and check if the list is empty
+	void insertNode(int mnumber, std::string Firstname, std::string Lastname) {
+		student* temp = new student;
+		temp->mnumber = mnumber;
+		temp->Firstname = Firstname;
+		temp->Lastname = Lastname;
+		temp->next = NULL;
+		if (head == NULL) {
+			head = temp;
+			tail = temp;
+			temp = NULL;
+		}
+		else {
+			tail->next = temp;
+			tail = temp;
+		}
+	}
+
+
+	//sort the list using bubble sort based on mnumber
+	void bubbleSort() {
+		student* temp = new student;
+		student* temp1 = new student;
+		for (temp = head; temp != NULL; temp = temp->next) {
+			for (temp1 = temp->next; temp1 != NULL; temp1 = temp1->next) {
+				if (temp->mnumber > temp1->mnumber) {
+					int mnumber = temp->mnumber;
+					std::string Firstname = temp->Firstname;
+					std::string Lastname = temp->Lastname;
+					temp->mnumber = temp1->mnumber;
+					temp->Firstname = temp1->Firstname;
+					temp->Lastname = temp1->Lastname;
+					temp1->mnumber = mnumber;
+					temp1->Firstname = Firstname;
+					temp1->Lastname = Lastname;
+				}
+			}
+		}
+	}
+
+	//sort the list using merge sort based on mnumber
+    student* mergeList(student* ll1, student* ll2) { //function for merging two sorted list
+        student* newhead = NULL;
+        if (ll1 == NULL)
+            return ll2;
+        if (ll2 == NULL)
+            return ll1;
+        //recursively merge the lists
+        if (ll1->mnumber <= ll2->mnumber) {
+            newhead = ll1;
+            newhead->next = mergeList(ll1->next, ll2);
+        }
+        else {
+            newhead = ll2;
+            newhead->next = mergeList(ll1, ll2->next);
+        }
+        return newhead;
+    }
+    void splitList(student* start, student** ll1, student** ll2) {
+        //similar to flyod's tortoise algorithm
+        student* slow = start;
+        student* fast = start->next;
+        while (fast != NULL) {
+            fast = fast->next;
+            if (fast != NULL) {
+                slow = slow->next;
+                fast = fast->next;
+            }
+        }
+        *ll1 = start;
+        *ll2 = slow->next;
+        //spliting
+        slow->next = NULL;
+    }
+    void mergeSort(student** start) {
+        student* head = *start;
+        student* ll1, * ll2;
+        //base case
+        if (head == NULL || head->next == NULL) {
+            return;
+        }
+        splitList(head, &ll1, &ll2); //split the list in two halves
+        //sort left and right sublists
+        mergeSort(&ll1);
+        mergeSort(&ll2);
+        //merge two sorted list
+        *start = mergeList(ll1, ll2);
+        return;
+	}
+
+	//radix sort linked list
+	
+	
+	
+	
+		
+
+};
+
+
+	
+	
+	
+
+
+	
+	
+	
+
+	
+	
+	
+	
+	
+
+
+
+
 
 
 
@@ -308,22 +478,41 @@ void printArray(int array[], int size) {
 
 int main() {
 
-    const int ARRAY_SIZE = 10;
+	linkedList list;
+	list.insertNode(321, "John", "Smith");
+	list.insertNode(221, "Jane", "Doe");
+	list.insertNode(31, "Bob", "Smith");
+	list.insertNode(433, "Sally", "Doe");
+	list.insertNode(52, "Joe", "Smith");
+	list.insertNode(6, "Mary", "Doe");
+	list.insertNode(71, "Bill", "Smith");
 
-    int rand_array[ARRAY_SIZE];
-
-    for (int i = 0; i < ARRAY_SIZE; i++) {
-        rand_array[i] = rand() % (2 * ARRAY_SIZE);  //Generate number between 0 and 2 * the size of the array
-    }
-
-    auto t1 = Clock::now();
-    radixsort(rand_array, ARRAY_SIZE);
-    auto t2 = Clock::now();
-
-    std::cout << "Sorted Array in Ascending Order:\n";
-    printArray(rand_array, ARRAY_SIZE);
+	std::cout << "Unsorted List: " << std::endl;
+	list.display();
+	std::cout << "Sorted List: " << std::endl;
+	//merge sort list
+	list.mergeSort(&list.head);
+	list.display();
 
 
-    std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds" << std::endl;
-    std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanosec" << std::endl;
-}
+
+
+		//const int ARRAY_SIZE = 10;
+
+		//int rand_array[ARRAY_SIZE];
+
+		//for (int i = 0; i < ARRAY_SIZE; i++) {
+		//    rand_array[i] = rand() % (2 * ARRAY_SIZE);  //Generate number between 0 and 2 * the size of the array
+		//}
+
+		//auto t1 = Clock::now();
+		//radixsort(rand_array, ARRAY_SIZE);
+		//auto t2 = Clock::now();
+
+		//std::cout << "Sorted Array in Ascending Order:\n";
+		//printArray(rand_array, ARRAY_SIZE);
+
+
+		//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds" << std::endl;
+		//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanosec" << std::endl;
+};
