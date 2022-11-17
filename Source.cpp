@@ -4,7 +4,7 @@
 #include <string>
 typedef std::chrono::high_resolution_clock Clock;
 
-
+//Bubble Sort - O(n^2)
 void bubbleSort(int array[], int size) {
     for (int step = 0; step < (size - 1); ++step) {
         int swapped = 0;
@@ -29,7 +29,7 @@ void bubbleSort(int array[], int size) {
 
 // -----------------------------------------------------------------------
 
-
+// Insertion Sort - O(n^2)
 void insertionSort(int array[], int size) {
     for (int step = 1; step < size; step++) {
         int key = array[step];
@@ -47,7 +47,7 @@ void insertionSort(int array[], int size) {
 
 // ------------------------------------------------------------------------
 
-
+// Merge sort - O(n log n)
 void merge(int array[], int const left, int const mid,
     int const right)
 {
@@ -121,7 +121,7 @@ void mergeSort(int array[], int const begin, int const end)
 
 // ---------------------------------------------------------------------
 
-
+// Quick sort - O(n log n)
 void swap(int* a, int* b) {
     int t = *a;
     *a = *b;
@@ -164,6 +164,7 @@ void quickSort(int array[], int low, int high) {
 
 // -------------------------------------------------------------------
 
+// Heap sort - O(n log n)
 void heapify(int arr[], int n, int i) {
 
     int largest = i;
@@ -199,7 +200,7 @@ void heapSort(int arr[], int n) {
 
 // -----------------------------------------------------------
 
-
+// Count sort - O(n+k)
 void countsort(int arr[], int n) {
     int max, min, id;
     int i, j;
@@ -242,6 +243,7 @@ void countsort(int arr[], int n) {
 
 // --------------------------------------------------------------------------------------------------
 
+// Radix sort - O(nk)
 int maxbit(int data[], int n) 
 {
     int d = 1;
@@ -705,41 +707,4 @@ int main() {
 
     test_program();
 	
-	//linkedList list;
-	//list.insertNode(321, "John", "Smith");
-	//list.insertNode(221, "Jane", "Doe");
-	//list.insertNode(31, "Bob", "Smith");
-	//list.insertNode(433, "Sally", "Doe");
-	//list.insertNode(52, "Joe", "Smith");
-	//list.insertNode(6, "Mary", "Doe");
-	//list.insertNode(71, "Bill", "Smith");
-
-	//std::cout << "Unsorted List: " << std::endl;
-	//list.display();
-	//std::cout << "Sorted List: " << std::endl;
-	////merge sort list
-	//list.insertionSort(&list.head);
-	//list.display();
-
-
-
-
-		//const int ARRAY_SIZE = 10;
-
-		//int rand_array[ARRAY_SIZE];
-
-		//for (int i = 0; i < ARRAY_SIZE; i++) {
-		//    rand_array[i] = rand() % (2 * ARRAY_SIZE);  //Generate number between 0 and 2 * the size of the array
-		//}
-
-		//auto t1 = Clock::now();
-		//radixsort(rand_array, ARRAY_SIZE);
-		//auto t2 = Clock::now();
-
-		//std::cout << "Sorted Array in Ascending Order:\n";
-		//printArray(rand_array, ARRAY_SIZE);
-
-
-		//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds" << std::endl;
-		//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanosec" << std::endl;
 };
